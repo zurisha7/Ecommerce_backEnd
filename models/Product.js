@@ -1,4 +1,5 @@
 // import important parts of sequelize library
+const { isInteger } = require('lodash');
 const { Model, DataTypes } = require('sequelize');
 // import our database connection from config.js
 const sequelize = require('../config/connection');
@@ -9,7 +10,37 @@ class Product extends Model {}
 // set up fields and rules for Product model
 Product.init(
   {
-    // define columns
+    id: { 
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    product_name: {
+        type: DataTypes.STRING, 
+        allowNull: false
+    },
+    price: {
+      type: DataTypes.DECIMAL,  
+      allowNull: false,
+      validate: {
+        isDecimal: true
+      }
+    },
+    stock: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            isInteger: true
+        }
+    },
+    category_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'category',
+            key: 'id'
+        }
+    }
   },
   {
     sequelize,
