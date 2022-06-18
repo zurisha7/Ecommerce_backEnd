@@ -1,5 +1,5 @@
 // import important parts of sequelize library
-const { isInteger } = require('lodash');
+
 const { Model, DataTypes } = require('sequelize');
 // import our database connection from config.js
 const sequelize = require('../config/connection');
@@ -31,7 +31,7 @@ Product.init(
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-            isInteger: true
+            isInt: true
         }
     },
     category_id: {
