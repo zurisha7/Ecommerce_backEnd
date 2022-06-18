@@ -36,31 +36,39 @@ router.get('/:id', async (req, res) => {
     },
     attributes: [ 
     'id',
-    'product_name',
-    'price',
-    'stock',
-    'category_id'
+    'tag_name'
     ],
-    through: 'ProductTag',
-
     include: [
       {
-        model: Category,
-        attributes: ['id', 'category_name'],
-      },
+      model: Product,
+      attributes: [ 
+      'id',
+      'product_name',
+      'price',
+      'stock',
+      'category_id' ],
+      through: 'ProductTag',
+      }
     ]
   })
-  .then(db)
+  .then(dbTagData => {
+    if(!dbTagData) {
+      res.status(404).json({ message: 'No tag found with this id' })
+      return;
+    }
+    res.json(dbTagData);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
   // find a single tag by its `id`
   // be sure to include its associated Product data
 });
 
 router.post('/', async (req, res) => {
   await Tag.create({
-    product_name: req.body.product_name,
-    price: req.body.price,
-    stock: req.body.stock,
-    category_id: req.body.category
+     tag_name: req.body.tag_name
   })
   .then(dbTagData => res.json(dbTagData))
   .catch(err => {
@@ -73,7 +81,7 @@ router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
   await Tag.update(
     {
-      product_name: req.body.product_name
+      tag_name: req.body.tag_name
     },
     {
       where: {

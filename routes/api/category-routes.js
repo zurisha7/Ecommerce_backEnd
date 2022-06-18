@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
       ],
      include: {
       model: Tag,
-      attributes: ['tag_name'],
+      attributes: ['id','tag_name'],
       through: 'ProductTag'
      }
  }]
@@ -58,9 +58,9 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.post('/', (req, res) => {
- Category.create({
-    category: req.body.category_name,
+router.post('/', async (req, res) => {
+await Category.create({
+    category_name: req.body.category_name,
   })
   .then(dbCategoryData => res.json(dbCategoryData))
   .catch(err => {
@@ -70,9 +70,9 @@ router.post('/', (req, res) => {
 
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', (req, res) => {
   // update a category by its `id` value
-  await Category.upate(
+  Category.update(
     {
       category_name: req.body.category_name
     },
@@ -87,12 +87,12 @@ router.put('/:id', async (req, res) => {
   })
   .catch(err => {
     console.log(err);
-    res.status(500).json(err);
+    res.status(400).json(err);
   })
 });
 
 router.delete('/:id', async (req, res) => {
-  console.log('id', req.params.id)
+
   // delete a category by its `id` value
   await Category.destroy({
     where: {
